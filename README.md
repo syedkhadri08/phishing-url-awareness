@@ -1,45 +1,46 @@
-Phishing URL Awareness Checker
+# Phishing URL Awareness Checker
 
 A Python-based command-line application that analyzes URL text and identifies common warning indicators associated with potentially suspicious links.
 
-1. Overview
+## 1. Overview
 
 The Phishing URL Awareness Checker is a beginner-friendly cybersecurity awareness project developed using Python.
 
 It examines user-provided URLs using predefined checks and displays warning indicators with explanations to help users review unfamiliar links carefully.
 
-Important: This tool does not determine whether a URL is definitively safe or malicious. It performs basic heuristic checks on URL text only.
+**Important:** This tool does not determine whether a URL is definitively safe or malicious. It performs basic heuristic checks on URL text only.
 
-2. Features
+## 2. Features
 
 The application performs six detection checks:
 
-1. @ Symbol Detection: Identifies URLs containing the "@" symbol.
-2. URL Length Detection: Flags URLs exceeding 100 characters.
-3. IPv4 Address Detection: Identifies URLs using an IPv4-style hostname.
-4. Hostname Label Detection: Flags hostnames containing five or more dot-separated labels.
-5. Punycode Detection: Identifies hostname labels beginning with the "xn--" marker.
-6. HTTP Detection: Identifies URLs using HTTP instead of HTTPS.
+1. **@ Symbol Detection:** Identifies URLs containing the `@` symbol.
+2. **URL Length Detection:** Flags URLs exceeding 100 characters.
+3. **IPv4 Address Detection:** Identifies URLs using an IPv4-style hostname.
+4. **Hostname Label Detection:** Flags hostnames containing five or more dot-separated labels.
+5. **Punycode Detection:** Identifies hostname labels beginning with the `xn--` marker.
+6. **HTTP Detection:** Identifies URLs using HTTP instead of HTTPS.
 
-3. Additional Improvements
+## 3. Additional Improvements
 
 The following improvements were implemented:
 
-- Interactive Menu: Allows users to analyze multiple URLs without restarting the application.
-- Quit Option: Provides an option to exit the program.
-- Warning Explanations: Displays an explanation alongside each detected warning.
-- Input Validation: Rejects empty input, unsupported URL schemes and certain malformed URLs.
+- **Interactive Menu:** Allows users to analyze multiple URLs without restarting the application.
+- **Quit Option:** Provides an option to exit the program.
+- **Warning Explanations:** Displays an explanation alongside each detected warning.
+- **Input Validation:** Rejects empty input, unsupported URL schemes and certain malformed URLs.
 
-4. Technologies Used
+## 4. Technologies Used
 
 - Python 3.10+
-- "urllib.parse" module
-- VS Code
+- `urllib.parse` module
+- Visual Studio Code
 
 No external Python packages are required.
 
-5. Project Structure
+## 5. Project Structure
 
+```text
 phishing-url-awareness/
 │
 ├── screenshots/
@@ -58,29 +59,34 @@ phishing-url-awareness/
 ├── phishing_checker.py
 ├── README.md
 └── requirements.txt
+```
 
-6. How to Run
+## 6. How to Run
 
-Prerequisites
+### Prerequisites
 
 Install Python 3.10 or later.
 
-Steps
+### Steps
 
 1. Clone or download this repository.
 2. Open the project folder in VS Code.
 3. Open the terminal.
 4. Run the following command:
 
+```bash
 python phishing_checker.py
+```
 
-5. Select option 1 to analyze a URL.
+5. Select option `1` to analyze a URL.
 6. Enter the URL when prompted.
-7. Select option 2 to exit the application.
+7. Select option `2` to exit the application.
 
-7. Example Output
+## 7. Example Output
 
+```text
 ========== PHISHING URL AWARENESS CHECKER ==========
+
 1. Analyze a URL
 2. Quit
 
@@ -99,8 +105,9 @@ Warning indicators detected:
     Explanation: HTTP does not encrypt the connection like HTTPS. Information exchanged with the website may be exposed.
 
 Recommendation: Review this URL carefully.
+```
 
-8. Testing
+## 8. Testing
 
 The application was tested using the five sample URLs specified in the project workbook.
 
@@ -114,13 +121,13 @@ Additional tests were performed for:
 - Invalid port numbers.
 - Punycode detection.
 
-Refer to "tests/test_samples.md" for the test results.
+Refer to `tests/tests_samples.md` for the test results.
 
-9. Screenshots
+## 9. Screenshots
 
-Screenshots demonstrating the application execution and test results are available in the "screenshots/" directory.
+Screenshots demonstrating application execution and test results are available in the `screenshots/` directory.
 
-10. Limitations
+## 10. Limitations
 
 - The application analyzes URL text only.
 - It does not access or scan external websites.
@@ -128,13 +135,14 @@ Screenshots demonstrating the application execution and test results are availab
 - Warning indicators do not prove that a URL is malicious.
 - No detected warnings do not guarantee that a URL is safe.
 
-11. Ethical Use
+## 11. Ethical Use
 
 This project is intended for cybersecurity awareness and educational purposes.
 
 Only sample URL strings are used for testing. The application does not visit suspicious websites or collect user credentials.
 
-12. Author
+## 12. Author
 
-Name: Syed Mohammed Khadri
-Last Updated: Nov 2026
+**Name:** Syed Mohammed Khadri
+
+**Last Updated:** November 2026
