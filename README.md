@@ -1,98 +1,60 @@
-# Phishing URL Awareness Checker
+# EWB Phishing URL Awareness Checker
 
-A Python-based command-line application that analyzes URL text and identifies common warning indicators associated with potentially suspicious links.
+## Overview
 
-## 1. Overview
+Phishing is a trick in which fake links or messages are used to make people reveal passwords, OTPs or payment details. This project is a beginner-friendly Python command-line tool that reads the text of a URL and reports common warning signs, with a short explanation for each one.
 
-The Phishing URL Awareness Checker is a beginner-friendly cybersecurity awareness project developed using Python.
+**Important:** The tool only reads URL text. It never opens a URL, and it cannot prove that a link is safe or malicious.
 
-It examines user-provided URLs using predefined checks and displays warning indicators with explanations to help users review unfamiliar links carefully.
-
-**Important:** This tool does not determine whether a URL is definitively safe or malicious. It performs basic heuristic checks on URL text only.
-
-## 2. Features
+## Features
 
 The application performs six detection checks:
 
-1. **@ Symbol Detection:** Identifies URLs containing the `@` symbol.
-2. **URL Length Detection:** Flags URLs exceeding 100 characters.
-3. **IPv4 Address Detection:** Identifies URLs using an IPv4-style hostname.
-4. **Hostname Label Detection:** Flags hostnames containing five or more dot-separated labels.
-5. **Punycode Detection:** Identifies hostname labels beginning with the `xn--` marker.
-6. **HTTP Detection:** Identifies URLs using HTTP instead of HTTPS.
+1. **@ Symbol Detection:** Flags URLs containing the `@` symbol.
+2. **URL Length Detection:** Flags URLs longer than 100 characters.
+3. **IPv4 Address Detection:** Flags hostnames written as an IPv4 address.
+4. **Hostname Label Detection:** Flags hostnames with five or more dot-separated labels.
+5. **Punycode Detection:** Flags hostname labels that begin with `xn--`.
+6. **HTTP Detection:** Flags URLs that use HTTP instead of HTTPS.
 
-## 3. Additional Improvements
+Improvements:
 
-The following improvements were implemented:
+- Interactive menu with a quit option (analyse many URLs without restarting)
+- A plain-language explanation for every warning
+- A "REVIEW CAREFULLY" summary with the number of warnings found
+- Input validation that rejects empty, malformed and unsupported input without crashing
 
-- **Interactive Menu:** Allows users to analyze multiple URLs without restarting the application.
-- **Quit Option:** Provides an option to exit the program.
-- **Warning Explanations:** Displays an explanation alongside each detected warning.
-- **Input Validation:** Rejects empty input, unsupported URL schemes and certain malformed URLs.
+## Requirements
 
-## 4. Technologies Used
+Python 3.10 or later. No extra packages (`requirements.txt` contains only a comment).
 
-- Python 3.10+
-- `urllib.parse` module
-- Visual Studio Code
+## How to Run
 
-No external Python packages are required.
-
-## 5. Project Structure
-
-```text
-phishing-url-awareness/
-│
-├── screenshots/
-│   ├── test_results/
-│   │   ├── Test 1.png
-│   │   ├── Test 2.png
-│   │   ├── Test 3.png
-│   │   ├── Test 4.png
-│   │   └── Test 5.png
-│   │
-│   └── sample_run.png
-│
-├── tests/
-│   └── tests_samples.md
-│
-├── phishing_checker.py
-├── README.md
-└── requirements.txt
-```
-
-## 6. How to Run
-
-### Prerequisites
-
-Install Python 3.10 or later.
-
-### Steps
-
-1. Clone or download this repository.
-2. Open the project folder in VS Code.
-3. Open the terminal.
-4. Run the following command:
+Windows:
 
 ```bash
 python phishing_checker.py
 ```
 
-5. Select option `1` to analyze a URL.
-6. Enter the URL when prompted.
-7. Select option `2` to exit the application.
+Mac / Linux:
 
-## 7. Example Output
+```bash
+python3 phishing_checker.py
+```
+
+Choose option `1`, type a sample URL, and choose option `2` to quit.
+
+## Example Output
 
 ```text
 ========== PHISHING URL AWARENESS CHECKER ==========
-
+Text checks only - this program does not open URLs.
 1. Analyze a URL
 2. Quit
 
 Enter your choice: 1
 
-Enter a URL to analyze: http://192.0.2.10/account
+Enter a sample URL to analyze: http://192.0.2.10/account
 
 ========== URL ANALYSIS REPORT ==========
 
@@ -104,45 +66,64 @@ Warning indicators detected:
 [!] URL uses HTTP instead of HTTPS
     Explanation: HTTP does not encrypt the connection like HTTPS. Information exchanged with the website may be exposed.
 
-Recommendation: Review this URL carefully.
+REVIEW CAREFULLY: 2 warning sign(s) found.
+
+NOTE: This tool cannot confirm whether a URL is safe.
+Never enter passwords from unexpected links.
 ```
 
-## 8. Testing
+## Testing
 
-The application was tested using the five sample URLs specified in the project workbook.
+| # | Input | Expected | Actual | Result |
+|---|-------|----------|--------|--------|
+| 1 | https://www.example.com/login | No warning signs | No warning indicators detected | PASS |
+| 2 | http://192.0.2.10/account | IP address + HTTP | IPv4 hostname + HTTP warnings | PASS |
+| 3 | http://example.com@sample.invalid/login | @ symbol + HTTP | @ symbol + HTTP warnings | PASS |
+| 4 | https://a.b.c.d.e.example.invalid/path | Many hostname segments | 5 or more labels warning | PASS |
+| 5 | https://xn--example.invalid/ | Punycode-style hostname | Punycode marker warning | PASS |
 
-All five required test cases passed.
+Ten additional edge-case tests (empty input, missing scheme, malformed hostname, invalid port, unsupported scheme, whitespace in hostname, uppercase scheme, long URL, invalid IPv4 values) are recorded in `tests/test_samples.md`.
 
-Additional tests were performed for:
+## Screenshots
 
-- Empty input.
-- Missing URL schemes.
-- Malformed hostnames.
-- Invalid port numbers.
-- Punycode detection.
+![Sample run](screenshots/sample_run.png)
+![Test results](screenshots/test_results.png)
 
-Refer to `tests/tests_samples.md` for the test results.
+## Improvements
 
-## 9. Screenshots
+1. **Menu loop with quit** - The program returns to the menu after each analysis, so several URLs can be checked in one session. Tested by analysing multiple URLs in one run and quitting with option 2.
+2. **Warning explanations and summary** - Each warning prints a short reason, followed by a "REVIEW CAREFULLY" count, so beginners understand why a clue matters. Tested by re-running all five sample URLs.
+3. **Safe input handling** - Empty input, unsupported schemes, invalid ports, spaces in hostnames and broken addresses such as `http://[bad` are rejected with a message instead of crashing. A URL typed without a scheme is analysed as `http://` and the user is told. Tested with the edge cases in `tests/test_samples.md`.
 
-Screenshots demonstrating application execution and test results are available in the `screenshots/` directory.
+## Limitations
 
-## 10. Limitations
+- The tool analyses URL text only.
+- It does not visit websites, scan for malware or use threat-intelligence databases.
+- Warning signs are clues, not proof of malicious intent.
+- No warnings does NOT mean a URL is safe (for example, `https://secure-login.example.invalid` produces none).
+- An @ symbol anywhere in the URL is flagged, including in a query string, so false positives are possible.
+- Only the `xn--` marker is checked, so look-alike characters typed directly in a hostname are not detected.
 
-- The application analyzes URL text only.
-- It does not access or scan external websites.
-- It does not use threat intelligence databases.
-- Warning indicators do not prove that a URL is malicious.
-- No detected warnings do not guarantee that a URL is safe.
+## Ethical Use
 
-## 11. Ethical Use
+This project is for cybersecurity awareness and education. Only sample URL strings are used for testing. The tool does not visit websites, collect credentials or send data anywhere. Do not use it to deceive anyone or to test websites without permission.
 
-This project is intended for cybersecurity awareness and educational purposes.
+## Project Structure
 
-Only sample URL strings are used for testing. The application does not visit suspicious websites or collect user credentials.
+```text
+phishing-url-awareness/
+├── screenshots/
+│   ├── sample_run.png
+│   └── test_results.png
+├── tests/
+│   └── test_samples.md
+├── phishing_checker.py
+├── README.md
+└── requirements.txt
+```
 
-## 12. Author
+## Author
 
-**Name:** Syed Mohammed Khadri
+Syed Mohammed Khadri, Cybersecurity Internship, EWB Courses
 
-**Last Updated:** November 2026
+Last updated: November 2026

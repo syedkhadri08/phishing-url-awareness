@@ -42,8 +42,10 @@ def has_ip_address(url):
 
     parts = hostname.split(".")
 
+    # isascii() is required: str.isdigit() also accepts characters such as
+    # superscript digits, which int() cannot convert and would crash the program.
     return len(parts) == 4 and all(
-        part.isdigit() and 0 <= int(part) <= 255
+        part.isascii() and part.isdigit() and 0 <= int(part) <= 255
         for part in parts
     )
 
@@ -55,7 +57,8 @@ def has_many_subdomains(url):
     if hostname is None:
         return False
 
-    parts = hostname.split(".")
+    # Ignore empty labels so a trailing dot (example.com.) is not counted
+    parts = [part for part in hostname.split(".") if part]
 
     return len(parts) >= 5
 
@@ -79,6 +82,14 @@ def uses_http(url):
     return parsed_url.scheme.lower() == "http"
 
 
+# Add http:// when the user typed a URL without a scheme
+def add_default_scheme(url):
+    if "://" in url:
+        return url, False
+
+    return "http://" + url, True
+
+
 # Validate URL input
 def is_url_valid(url):
     try:
@@ -98,8 +109,8 @@ def is_url_valid(url):
         if hostname.startswith(".") or ".." in hostname:
             return False
 
-        # Validate the port if provided
-        parsed_url.port
+        # Accessing .port raises ValueError for an invalid port number
+        _ = parsed_url.port
 
         return True
 
@@ -129,52 +140,61 @@ def analyze_url(url):
 
 # Main application
 def main():
-    while True:
-        print("\n========== PHISHING URL AWARENESS CHECKER ==========")
-        print("1. Analyze a URL")
-        print("2. Quit")
+    try:
+        while True:
+            print("\n========== PHISHING URL AWARENESS CHECKER ==========")
+            print("Text checks only - this program does not open URLs.")
+            print("1. Analyze a URL")
+            print("2. Quit")
 
-        choice = input("\nEnter your choice: ").strip()
+            choice = input("\nEnter your choice: ").strip()
 
-        if choice == "1":
-            url = input("\nEnter a URL to analyze: ").strip()
+            if choice == "1":
+                url = input("\nEnter a sample URL to analyze: ").strip()
 
-            if not url:
-                print("Error: URL cannot be empty.")
-                continue
+                if not url:
+                    print("Error: URL cannot be empty.")
+                    continue
 
-            if not is_url_valid(url):
-                print("Error: Please enter a valid HTTP or HTTPS URL.")
-                continue
+                url, scheme_assumed = add_default_scheme(url)
 
-            results = analyze_url(url)
+                if not is_url_valid(url):
+                    print("Error: Please enter a valid HTTP or HTTPS URL.")
+                    continue
 
-            print("\n========== URL ANALYSIS REPORT ==========")
+                if scheme_assumed:
+                    print("\nNote: No scheme was entered, so http:// was assumed.")
 
-            if results:
-                print("\nWarning indicators detected:")
+                results = analyze_url(url)
 
-                for warning in results:
-                    print(f"\n[!] {warning}")
-                    print(f"    Explanation: {WARNING_EXPLANATIONS[warning]}")
+                print("\n========== URL ANALYSIS REPORT ==========")
 
-                print("\nRecommendation: Review this URL carefully.")
+                if results:
+                    print("\nWarning indicators detected:")
+
+                    for warning in results:
+                        print(f"\n[!] {warning}")
+                        print(f"    Explanation: {WARNING_EXPLANATIONS[warning]}")
+
+                    print(f"\nREVIEW CAREFULLY: {len(results)} warning sign(s) found.")
+
+                else:
+                    print("\nNo warning indicators detected.")
+
+                print("\nNOTE: This tool cannot confirm whether a URL is safe.")
+                print("Never enter passwords from unexpected links.")
+
+            elif choice == "2":
+                print("\nExiting Phishing URL Awareness Checker.")
+                print("========== Goodbye! ==========")
+                break
 
             else:
-                print("\nNo warning indicators detected.")
+                print("\nInvalid choice. Please select 1 or 2.")
 
-            print("\nNOTE: This tool cannot confirm whether a URL is safe.")
-            print("Always verify unfamiliar links before interacting with them.")
-
-        elif choice == "2":
-            print("\nExiting Phishing URL Awareness Checker.")
-            print("========== Goodbye! ==========")
-            break
-
-        else:
-            print("\nInvalid choice. Please select 1 or 2.")
+    except (EOFError, KeyboardInterrupt):
+        print("\n\nInput closed. Goodbye! Stay alert online.")
 
 
 if __name__ == "__main__":
     main()
-
